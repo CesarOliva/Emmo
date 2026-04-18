@@ -8,13 +8,17 @@
  * @module
  */
 
+import type * as dates from "../dates.js";
+
 import type {
   ApiFromModules,
   FilterApi,
   FunctionReference,
 } from "convex/server";
 
-declare const fullApi: ApiFromModules<{}>;
+declare const fullApi: ApiFromModules<{
+  dates: typeof dates;
+}>;
 
 /**
  * A utility for referencing Convex functions in your app's public API.

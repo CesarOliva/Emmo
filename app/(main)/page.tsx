@@ -6,10 +6,15 @@ import { PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const HomePage = () => {
+    const [mounted, setMounted] = useState(false);
     const [date, setDate] = useState({ 
         year: new Date().getFullYear(), 
         month: new Date().getMonth() 
     })
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const updateMonth = (direction: -1 | 1) => {
         const today = new Date();
@@ -109,8 +114,12 @@ const HomePage = () => {
         };
     }, [])
 
+    if (!mounted) {
+        return <main className="min-h-screen h-full" />;
+    }
+
     return (
-        <main className="min-h-screen h-full flex flex-col justify-between">
+        <main className="min-h-screen h-full flex flex-col max-w-150 items-center justify-between">
             <div className="flex flex-col">
                 <Header date={date}/>
                 <GridDays date={date}/>

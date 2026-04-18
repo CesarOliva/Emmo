@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Serif, Caveat, Geist } from "next/font/google";
-import { ConvexClientProvider } from "../providers/convex-provider";
+import { ConvexClientProvider } from "../components/providers/convex-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -27,11 +28,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es-MX" className={cn("h-full", "antialiased", notoSerif.variable, "font-sans", geist.variable)}>
-      <body className="min-h-full flex flex-col">
-        <ConvexClientProvider>
-          {children}
-        </ConvexClientProvider>
+    <html suppressHydrationWarning lang="es-MX" className={cn("h-full", "antialiased", notoSerif.variable, "font-sans", geist.variable)}>
+      <body className="min-h-full flex flex-col w-full items-center">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          storageKey='emmo-theme'
+        >
+          <ConvexClientProvider>
+            {children}
+          </ConvexClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
