@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { Noto_Serif, Caveat } from "next/font/google";
+import { Noto_Serif, Caveat, Geist } from "next/font/google";
 import { ConvexClientProvider } from "../providers/convex-provider";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const notoSerif = Noto_Serif({
   variable: "--font-noto-serif",
@@ -24,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es-MX" className={`${notoSerif.variable} h-full antialiased`}>
+    <html lang="es-MX" className={cn("h-full", "antialiased", notoSerif.variable, "font-sans", geist.variable)}>
       <body className="min-h-full flex flex-col">
         <ConvexClientProvider>
           {children}
