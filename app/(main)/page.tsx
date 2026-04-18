@@ -116,8 +116,8 @@ const HomePage = () => {
                 <GridDays date={date}/>
             </div>
 
-            <div className="flex justify-center mb-6">
-                <PlusCircle className="size-12"/>
+            <div className="flex justify-center mb-8">
+                <PlusCircle className="size-14"/>
             </div>
         </main>
     );
