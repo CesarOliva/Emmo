@@ -91,12 +91,11 @@ const GridDays = ({date}: {date: Date}) => {
                                     <span className="cursor-pointer text-neutral-400 font-bold -ml-1 font-caveat text-lg transition-all duration-200 group-hover:opacity-0">{day}</span>
                                 )}
                                     <IconPicker onChange={(mood: string) => onMoodSelect(mood, {year: date.year, month: date.month, day})} asChild>
-                                        <button
-                                            type="button"
-                                            className="absolute inset-0 hidden md:flex items-center justify-center rounded-full opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 group-hover:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto data-[state=open]:opacity-100 data-[state=open]:pointer-events-auto"
-                                        >
-                                            <Smile className="size-6 text-neutral-400"/>
-                                        </button>
+                                        <div className="cursor-pointer absolute inset-0 md:hidden items-center justify-center group-hover:md:flex w-full">
+                                            <button className="rounded-full text-xs p-2 ">
+                                                <Smile className="size-6 text-neutral-400 cursor-pointer opacity-0 md:opacity-100"/>
+                                            </button>
+                                        </div>
                                     </IconPicker>
                             </>
                         )}
