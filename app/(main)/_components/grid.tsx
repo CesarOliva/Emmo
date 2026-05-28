@@ -3,6 +3,7 @@ import { api } from '@/convex/_generated/api';
 import { useMutation, useQuery } from 'convex/react';
 import IconPicker from '@/components/icon-picker';
 import { Smile } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
 
 type Date = {
     month: number;
@@ -43,8 +44,10 @@ const GridDays = ({date}: {date: Date}) => {
     const visibleDays = isCurrentMonth ? now.getDate() : totalDays
 
     const daysArray = Array.from({ length: visibleDays }, (_, i) => i + 1)
+
+    const { isLoaded, isSignedIn, user } = useUser();
     
-    if(!moods){
+    if(!moods || !isLoaded || !isSignedIn || !user){
         return(
             <div className="px-4 grid grid-cols-5 justify-items-center gap-2">
                 {daysArray.map((day) => (
@@ -68,7 +71,7 @@ const GridDays = ({date}: {date: Date}) => {
     );
 
     return (
-        <div key={`grid-${date.month}-${date.year}`} className="px-4 grid grid-cols-5 justify-items-center gap-2">
+        <div key={`grid-${date.month}-${date.year}`} className="px-4 grid grid-cols-5 justify-items-center gap-2 mb-8">
             {daysArray.map((day, index) => {
                 const formattedDate = `${date.year}-${String(date.month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
                 const mood = moodsMap[formattedDate];
