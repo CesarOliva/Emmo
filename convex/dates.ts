@@ -120,3 +120,107 @@ export const deleteMood = mutation({
         return await ctx.db.delete("dates", dateId!._id);
     }
 })
+
+export const addSong = mutation({
+    args: {
+        date: v.string(),
+        song: v.object({
+            name: v.string(),
+            artist: v.string(),
+            coverUrl: v.string(),
+            durationMs: v.number()
+        })
+    }, handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if(!identity){
+            return null;
+        }
+
+        const userId = identity.subject;
+
+        const existing = await ctx.db.query("dates")
+            .withIndex("by_user_date", (q)=>
+                q.eq("userId", userId)
+                .eq("date", args.date)
+            )
+            .first();
+
+        if(existing){
+            const updated = await ctx.db.patch("dates", existing._id, {
+                song: args.song
+            });
+
+            return updated;
+        }
+
+        return null;
+    }
+});
+
+export const removeSong = mutation({
+    args: {
+        date: v.string(),
+    }, handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if(!identity){
+            return null;
+        }
+
+        const userId = identity.subject;
+
+        const existing = await ctx.db.query("dates")
+            .withIndex("by_user_date", (q)=>
+                q.eq("userId", userId)
+                .eq("date", args.date)
+            )
+            .first();
+
+        if(existing){
+            const updated = await ctx.db.patch("dates", existing._id, {
+                song: undefined
+            });
+
+            return updated;
+        }
+
+        return null;
+    }
+})
+
+export const upsertNote = mutation({
+    args: {
+        date: v.string(),
+        note: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if (!identity) {
+            return null;
+        }
+
+        const userId = identity.subject;
+
+        const existing = await ctx.db.query("dates")
+            .withIndex("by_user_date", (q) =>
+                q.eq("userId", userId)
+                    .eq("date", args.date)
+            )
+            .first();
+
+        if (existing) {
+            return await ctx.db.patch("dates", existing._id, {
+                note: args.note,
+            });
+        }
+
+        return await ctx.db.insert("dates", {
+            userId,
+            date: args.date,
+            mood: "",
+            note: args.note,
+        });
+    },
+});
