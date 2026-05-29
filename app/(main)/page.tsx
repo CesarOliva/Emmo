@@ -1,11 +1,21 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Header from "./_components/header"
 import GridDays from "./_components/grid"
 import { PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
+const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+};
+
 const HomePage = () => {
+    const router = useRouter();
     const [mounted, setMounted] = useState(false);
     const [date, setDate] = useState({ 
         year: new Date().getFullYear(), 
@@ -118,15 +128,19 @@ const HomePage = () => {
         return <main className="min-h-screen h-full" />;
     }
 
+    const handleGoToToday = () => {
+        router.push(`/${formatDate(new Date())}`);
+    };
+
     return (
         <main className="min-h-screen h-full flex flex-col max-w-150 items-center justify-between">
-            <div className="flex flex-col">
+            <div className="w-full flex flex-col">
                 <Header date={date}/>
                 <GridDays date={date}/>
             </div>
 
             <div className="flex justify-center mb-8">
-                <PlusCircle className="size-14"/>
+                <PlusCircle onClick={handleGoToToday} className="size-14 cursor-pointer"/>
             </div>
         </main>
     );

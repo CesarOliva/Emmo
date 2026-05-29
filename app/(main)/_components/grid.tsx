@@ -1,9 +1,10 @@
+'use client';
+
 import getDaysInMonth from '@/utils/getDays'
 import { api } from '@/convex/_generated/api';
-import { useMutation, useQuery } from 'convex/react';
-import IconPicker from '@/components/icon-picker';
-import { Smile } from 'lucide-react';
+import { useQuery } from 'convex/react';
 import { useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
 type Date = {
     month: number;
@@ -12,29 +13,11 @@ type Date = {
 }
 
 const GridDays = ({date}: {date: Date}) => {
+    const router = useRouter();
     const moods = useQuery(api.dates.getMoodsByMonth, {
         year: date.year,
         month: date.month,
     })
-
-    const registerMood = useMutation(api.dates.registerMood);
-    const onMoodSelect = (mood: string, date: Date)=>{
-        registerMood({
-            year: date.year,
-            month: date.month+1,
-            day: date.day!,
-            mood
-        })
-    }
-
-    const deleteMood = useMutation(api.dates.deleteMood);
-    const handleRemove = (date: Date) => {
-        deleteMood({
-            year: date.year,
-            month: date.month+1,
-            day: date.day!,
-        })
-    }
 
     const totalDays = getDaysInMonth(date.year, date.month + 1);
 
@@ -83,9 +66,10 @@ const GridDays = ({date}: {date: Date}) => {
                         style={{
                             animationDelay: `${index * 0.01}s`
                         }}
+                        onClick={()=> router.push(`/${formattedDate}`)}
                     >
                         {mood ? (
-                            <span className="text-3xl cursor-pointer" onClick={()=> handleRemove({year: date.year, month: date.month, day})}>{mood}</span>
+                            <span className="text-3xl cursor-pointer">{mood}</span>
                         ) : (
                             <>
                                 {isCurrentMonth && day === now.getDate() ? (
@@ -93,13 +77,6 @@ const GridDays = ({date}: {date: Date}) => {
                                 ):(
                                     <span className="cursor-pointer text-neutral-400 font-bold -ml-1 font-caveat text-lg transition-all duration-200 group-hover:opacity-0">{day}</span>
                                 )}
-                                    <IconPicker onChange={(mood: string) => onMoodSelect(mood, {year: date.year, month: date.month, day})} asChild>
-                                        <div className="cursor-pointer absolute inset-0 md:hidden items-center justify-center group-hover:md:flex w-full">
-                                            <button className="rounded-full text-xs p-2 ">
-                                                <Smile className="size-6 text-neutral-400 cursor-pointer opacity-0 md:opacity-100"/>
-                                            </button>
-                                        </div>
-                                    </IconPicker>
                             </>
                         )}
                     </div> 

@@ -29,6 +29,33 @@ export const getMoodsByMonth = query({
     }
 })
 
+export const getMoodByDate = query({
+    args: {
+        year: v.number(),
+        month: v.number(),
+        day: v.number(),
+    }, handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if(!identity){
+            throw new Error("Not authenticated")
+        }
+
+        const userId = identity.subject;
+
+        const date = `${args.year}-${String(args.month).padStart(2, "0")}-${String(args.day).padStart(2, "0")}`;
+
+        const mood = await ctx.db.query("dates")
+            .withIndex("by_user_date", (q)=>
+                q.eq("userId", userId)
+                .eq("date", date)
+            )
+            .first();
+
+        return mood;
+    }
+})
+
 export const registerMood = mutation({
     args: {
         year: v.number(),
@@ -43,6 +70,21 @@ export const registerMood = mutation({
         }
 
         const userId = identity.subject;
+
+        const existing = await ctx.db.query("dates")
+            .withIndex("by_user_date", (q)=>
+                q.eq("userId", userId)
+                .eq("date", `${args.year}-${String(args.month).padStart(2, "0")}-${String(args.day).padStart(2, "0")}`)
+            )
+            .first();
+
+        if(existing){
+            const updated = await ctx.db.patch("dates", existing._id, {
+                mood: args.mood
+            });
+
+            return updated;
+        }
 
         const mood = await ctx.db.insert("dates", {
             userId: userId,
