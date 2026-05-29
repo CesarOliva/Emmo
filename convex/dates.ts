@@ -9,7 +9,7 @@ export const getMoodsByMonth = query({
        const identity = await ctx.auth.getUserIdentity();
 
         if(!identity){
-            throw new Error("Not authenticated")
+            return null;
         }
 
         const userId = identity.subject;
@@ -38,7 +38,7 @@ export const getMoodByDate = query({
         const identity = await ctx.auth.getUserIdentity();
 
         if(!identity){
-            throw new Error("Not authenticated")
+            return null;
         }
 
         const userId = identity.subject;
@@ -66,7 +66,7 @@ export const registerMood = mutation({
         const identity = await ctx.auth.getUserIdentity();
 
         if(!identity){
-            throw new Error("Not authenticated")
+            return null;
         }
 
         const userId = identity.subject;
