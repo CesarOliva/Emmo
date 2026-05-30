@@ -20,6 +20,9 @@ const caveat = Caveat({
 export const metadata: Metadata = {
   title: "EMMO App",
   description: "Track your emotions everyday",
+  icons: {
+    icon: "/favicon.png",
+  }
 };
 
 export default function RootLayout({
