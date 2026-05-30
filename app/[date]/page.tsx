@@ -1,13 +1,16 @@
 'use client';
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, ChevronLeft, Smile, Music, Search } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+
+import { ArrowLeft, ArrowRight, ChevronLeft, Smile, Music, Search } from "lucide-react";
 import IconPicker from "@/components/icon-picker";
 import SpotifySearch from "@/components/spotify";
 import SongItem from "@/components/songItem";
+import Activities from "@/components/activities";
 
 const parseDateParam = (dateParam: string | undefined) => {
     if (!dateParam || !/^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
@@ -214,7 +217,8 @@ const DatePage = () => {
                             </>
                         )}
 
-                        {/* <Activities/> */}
+                        <p className="text-sm mb-2 mt-4"><Search className="inline-block mr-2 size-4" />Activities</p>
+                        <Activities/>
                     </div>
                 </div>
             </div>

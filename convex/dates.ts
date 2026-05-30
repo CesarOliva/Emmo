@@ -224,3 +224,86 @@ export const upsertNote = mutation({
         });
     },
 });
+
+export const getOrCreateActivity = mutation({
+    args: {
+        date: v.string(),
+        name: v.string(),
+        color: v.string()
+    },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if(!identity){
+            throw new Error("Not authenticated")
+        }
+
+        const userId = identity.subject;
+
+        let activity = await ctx.db.query("activities")
+            .withIndex("by_user_name", q =>
+                q.eq("userId", userId).eq("name", args.name)
+            )
+            .unique();
+
+        if (!activity) {
+            const activityId = await ctx.db.insert("activities", {
+                userId,
+                name: args.name,
+                color: args.color,
+            });
+
+            activity = await ctx.db.get(activityId);
+        }
+
+        const day = await ctx.db.query("dates")
+            .withIndex("by_user_date", q =>
+                q.eq("userId", userId).eq("date", args.date)
+            )
+            .unique();
+
+        if (!day) throw new Error("Date not found");
+
+        const activities = new Set(day.activities ?? []);
+        activities.add(activity!._id);
+
+        await ctx.db.patch(day._id, {
+            activities: [...(day.activities ?? []), activity!._id],
+        });
+
+        return activity;
+    },
+});
+
+export const getActivities = query({
+    args: {
+        date: v.string()
+    },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if(!identity){
+            throw new Error("Not authenticated")
+        }
+
+        const userId = identity.subject;
+
+        const date = await ctx.db.query("dates")
+            .withIndex("by_user_date", q =>
+                q.eq("userId", userId).eq("date", args.date)
+            )
+            .first();
+
+        const activities = date?.activities ?? [];
+
+        const activityDetails = await Promise.all(
+            activities.map(activityId => ctx.db.get(activityId))
+        );
+
+        activityDetails.sort((a: any, b: any) =>
+            a.name.localeCompare(b.name)
+        );
+
+        return activityDetails
+    }
+})

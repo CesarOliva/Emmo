@@ -32,7 +32,7 @@ const SongItem = ({
     }
 
     return (
-        <div className="cursor-pointer flex justify-between items-center hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-md p-1">
+        <div className="cursor-pointer flex justify-between items-center hover:bg-[#fafafa]/50 dark:hover:bg-neutral-900/50 rounded-md p-1">
             <div className="flex justify-center items-center">
                 <img className="w-12 h-12 rounded-md border-neutral-700 border" src={cover} alt={name}/>
                 <div className="flex flex-col justify-center text-sm ml-2">
