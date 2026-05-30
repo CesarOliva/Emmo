@@ -183,10 +183,10 @@ const DatePage = () => {
                 <div className="w-full border border-neutral-700 p-4">
                     <IconPicker onChange={(mood: string) => onMoodSelect(mood)} asChild>
                         {mood?.mood ? (
-                            <p className="text-[80px] text-center">{mood.mood}</p>
+                            <p className="text-[60px] text-center">{mood.mood}</p>
                         ) : (
                             <div className="flex justify-center">
-                                <Smile className="size-20 text-neutral-400 cursor-pointer"/>
+                                <Smile className="size-15 text-neutral-400 cursor-pointer"/>
                             </div>                          
                         )}
                     </IconPicker>
@@ -196,7 +196,7 @@ const DatePage = () => {
                         value={note}
                         onChange={(event) => setNote(event.target.value)}
                         rows={1}
-                        className="font-azhu w-full p-3 text-center focus:outline-none min-h-5 resize-none overflow-hidden"
+                        className="font-azhu text-lg w-full p-3 text-center focus:outline-none min-h-5 max-h-[70vh] resize-none overflow-hidden"
                         placeholder="How was your day?"
                     />
 
